@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tải hàng loạt - Cổng dịch vụ công</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 14px;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .tab {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        color: #666;
+        transition: all 0.3s;
+      }
+
+      .tab:hover {
+        color: #667eea;
+      }
+
+      .tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Guide Styles */
+      .guide-section {
+        margin-bottom: 30px;
+      }
+
+      .guide-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .step {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+      }
+
+      .step-number {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background: #667eea;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      .step-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .step-content {
+        color: #555;
+        line-height: 1.8;
+        margin-left: 42px;
+      }
+
+      .step-content ul {
+        margin: 10px 0;
+        padding-left: 20px;
+      }
+
+      .step-content li {
+        margin: 8px 0;
+      }
+
+      .step-image {
+        margin: 15px 0;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+      }
+
+      .step-image img {
+        max-width: 100%;
+        border-radius: 4px;
+      }
+
+      .code-inline {
+        background: #e3f2fd;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        color: #1565c0;
+        font-weight: 600;
+      }
+
+      .highlight {
+        background: #fff3cd;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-weight: 600;
+      }
+
+      .tip-box {
+        background: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 6px;
+      }
+
+      .tip-box strong {
+        color: #2e7d32;
+      }
+
+      .warning-box {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 6px;
+      }
+
+      .warning-box strong {
+        color: #856404;
+      }
+
+      .keyboard-key {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #333;
+        color: white;
+        border-radius: 4px;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Tool Styles */
+      .input-section {
+        margin-bottom: 20px;
+      }
+
+      .input-section label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 15px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 250px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+        resize: vertical;
+        transition: border-color 0.3s;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .hint {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #666;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      button {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        flex: 1;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-secondary {
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #e0e0e0;
+      }
+
+      .progress-section {
+        display: none;
+        margin-bottom: 30px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 18px;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid #e0e0e0;
+      }
+
+      .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .stat-label {
+        font-size: 13px;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 32px;
+        background: #f0f0f0;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .progress-text {
+        margin-top: 10px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .log-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        max-height: 500px;
+        overflow-y: auto;
+      }
+
+      .log-item {
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        font-size: 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        line-height: 1.5;
+      }
+
+      .log-success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .log-error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .log-info {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .log-icon {
+        font-weight: 700;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .download-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .download-link:hover {
+        text-decoration: underline;
+      }
+
+      .screenshot-placeholder {
+        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        padding: 40px;
+        text-align: center;
+        border-radius: 8px;
+        color: #666;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚀 Công cụ tải hàng loạt</h1>
+        <p>Cổng thông tin điện tử Chính phủ - thutuc.dichvucong.gov.vn</p>
+      </div>
+
+      <div class="content">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('guide')">
+            📖 Hướng dẫn
+          </button>
+          <button class="tab" onclick="switchTab('tool')">
+            🛠️ Công cụ tải
+          </button>
+        </div>
+
+        <!-- Tab Guide -->
+        <div id="guideTab" class="tab-content active">
+          <div class="guide-section">
+            <div class="guide-title">
+              📖 Hướng dẫn chi tiết: Lấy JSON từ API
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">1</span>
+                Mở trang thutuc.dichvucong.gov.vn
+              </div>
+              <div class="step-content">
+                <p>
+                  Truy cập:
+                  <code class="code-inline"
+                    >https://thutuc.dichvucong.gov.vn</code
+                  >
+                </p>
+                <p>
+                  Tìm kiếm hoặc lọc danh sách thủ tục hành chính mà bạn muốn
+                  tải.
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">2</span>
+                Mở Developer Tools (F12)
+              </div>
+              <div class="step-content">
+                <p>Nhấn phím <span class="keyboard-key">F12</span> hoặc:</p>
+                <ul>
+                  <li>
+                    Windows/Linux: <span class="keyboard-key">Ctrl</span> +
+                    <span class="keyboard-key">Shift</span> +
+                    <span class="keyboard-key">I</span>
+                  </li>
+                  <li>
+                    Mac: <span class="keyboard-key">Cmd</span> +
+                    <span class="keyboard-key">Option</span> +
+                    <span class="keyboard-key">I</span>
+                  </li>
+                  <li>
+                    Hoặc chuột phải → chọn
+                    <span class="highlight">"Inspect"</span> /
+                    <span class="highlight">"Kiểm tra"</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">3</span>
+                Chuyển sang tab Network
+              </div>
+              <div class="step-content">
+                <p>
+                  Trong Developer Tools, tìm và nhấn vào tab
+                  <span class="highlight">"Network"</span> /
+                  <span class="highlight">"Mạng"</span>
+                </p>
+                <div class="tip-box">
+                  <strong>💡 Mẹo:</strong> Nếu không thấy tab Network, có thể nó
+                  bị ẩn. Nhấn vào dấu
+                  <code class="code-inline">&gt;&gt;</code> để xem thêm các tab.
+                </div>
+                <div class="step-image">
+                  <div class="screenshot-placeholder">
+                    <img src="./sc1.png" style="background-size: contain" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">4</span>
+                Làm mới trang hoặc thực hiện tìm kiếm
+              </div>
+              <div class="step-content">
+                <p>Để bắt được các request API:</p>
+                <ul>
+                  <li>
+                    Nhấn <span class="keyboard-key">F5</span> để reload trang,
+                    HOẶC
+                  </li>
+                  <li>Thực hiện tìm kiếm/lọc danh sách thủ tục hành chính</li>
+                </ul>
+                <p>Bạn sẽ thấy nhiều request xuất hiện trong tab Network.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">5</span>
+                Chuyển sang tab Response
+              </div>
+              <div class="step-content">
+                <p>
+                  Nhấn vào tab <span class="highlight">"Response"</span> để xem
+                  dữ liệu JSON trả về.
+                </p>
+                <div class="warning-box">
+                  <strong>⚠️ Kiểm tra:</strong> Đảm bảo response chứa các
+                  trường: <code class="code-inline">ID</code>,
+                  <code class="code-inline">PROCEDURE_CODE</code>,
+                  <code class="code-inline">PROCEDURE_NAME</code>
+                </div>
+                <div class="step-image">
+                  <div class="screenshot-placeholder">
+                    <img src="./sc2.png" style="background-size: contain" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">6</span>
+                Copy JSON data
+              </div>
+              <div class="step-content">
+                <p><strong>Cách 1:</strong> Copy trực tiếp từ tab Response</p>
+                <ul>
+                  <li>Chuột phải vào vùng JSON</li>
+                  <li>
+                    Chọn <span class="highlight">"Copy"</span> hoặc
+                    <span class="highlight">"Copy value"</span>
+                  </li>
+                </ul>
+
+                <p style="margin-top: 15px">
+                  <strong>Cách 2:</strong> Sử dụng Console
+                </p>
+                <ul>
+                  <li>
+                    Chuột phải vào request → chọn
+                    <span class="highlight">"Copy"</span> →
+                    <span class="highlight">"Copy response"</span>
+                  </li>
+                </ul>
+
+                <div class="tip-box">
+                  <strong>💡 Kiểm tra:</strong> Paste vào Notepad để đảm bảo
+                  JSON hợp lệ. Nó phải bắt đầu bằng
+                  <code class="code-inline">[</code> và kết thúc bằng
+                  <code class="code-inline">]</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-title">
+                <span class="step-number">7</span>
+                Paste JSON vào công cụ tải
+              </div>
+              <div class="step-content">
+                <p>
+                  Chuyển sang tab
+                  <span class="highlight">"🛠️ Công cụ tải"</span> trong trang
+                  này.
+                </p>
+                <p>
+                  Paste JSON vào ô textarea và nhấn
+                  <span class="highlight">"Bắt đầu tải từ JSON"</span>
+                </p>
+                <div class="tip-box">
+                  <strong>✨ Hoàn tất!</strong> Tool sẽ tự động tải tất cả các
+                  file Word xuống máy bạn.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-box" style="margin-top: 30px">
+            <p><strong>🔍 Không tìm thấy request API?</strong></p>
+            <p>• Thử reload trang với Network đang mở</p>
+            <p>• Thử tìm kiếm hoặc lọc dữ liệu trên trang web</p>
+            <p>
+              • Tìm request có tên như: <code class="code-inline">search</code>,
+              <code class="code-inline">list</code>,
+              <code class="code-inline">getTTHC</code>,
+              <code class="code-inline">getProcedure</code>
+            </p>
+          </div>
+        </div>
+
+        <!-- Tab Tool -->
+        <div id="toolTab" class="tab-content">
+          <div class="warning-box">
+            <p><strong>⚠️ Lưu ý quan trọng:</strong></p>
+            <p>
+              • Trình duyệt sẽ hỏi cho phép tải nhiều file - hãy chọn
+              <strong>"Cho phép"</strong>
+            </p>
+            <p>• Đợi khoảng 2 giây giữa mỗi lần tải để tránh bị chặn</p>
+            <p>• Không đóng hoặc refresh trang trong khi đang tải</p>
+          </div>
+
+          <div class="input-section">
+            <label for="jsonInput">Paste JSON data từ API:</label>
+            <textarea
+              id="jsonInput"
+              placeholder='[
+  {
+    "ID": "418834",
+    "PROCEDURE_CODE": "1.014421",
+    "PROCEDURE_NAME": "Tên thủ tục hành chính...",
+    ...
+  },
+  {
+    "ID": "418833",
+    "PROCEDURE_CODE": "1.014419",
+    ...
+  }
+]'
+            ></textarea>
+            <div class="hint">
+              💡 Paste toàn bộ JSON array từ tab Response trong Network
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button class="btn-primary" id="startBtn" onclick="startDownload()">
+              <span>⬇️</span> Bắt đầu tải từ JSON
+            </button>
+            <button class="btn-secondary" onclick="clearAll()">🗑️ Xóa</button>
+          </div>
+
+          <div class="progress-section" id="progressSection">
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Tổng số</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="successCount">0</div>
+                <div class="stat-label">Thành công</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="errorCount">0</div>
+                <div class="stat-label">Lỗi</div>
+              </div>
+            </div>
+
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+            <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
+          </div>
+
+          <div class="log-section" id="logSection"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentIndex = 0;
+      let items = [];
+      let successCount = 0;
+      let errorCount = 0;
+
+      function switchTab(tabName) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+
+        if (tabName === "guide") {
+          document.querySelectorAll(".tab")[0].classList.add("active");
+          document.getElementById("guideTab").classList.add("active");
+        } else {
+          document.querySelectorAll(".tab")[1].classList.add("active");
+          document.getElementById("toolTab").classList.add("active");
+        }
+      }
+
+      function addLog(message, type = "info") {
+        const logSection = document.getElementById("logSection");
+        const logItem = document.createElement("div");
+        logItem.className = `log-item log-${type}`;
+
+        const icons = {
+          success: "✓",
+          error: "✗",
+          info: "ℹ",
+        };
+
+        logItem.innerHTML = `
+                <span class="log-icon">${icons[type]}</span>
+                <span>${message}</span>
+            `;
+
+        logSection.insertBefore(logItem, logSection.firstChild);
+      }
+
+      function updateProgress() {
+        const progress = Math.round((currentIndex / items.length) * 100);
+        document.getElementById("progressFill").style.width = progress + "%";
+        document.getElementById("progressFill").textContent = progress + "%";
+        document.getElementById(
+          "progressText"
+        ).textContent = `Đã xử lý ${currentIndex}/${items.length} văn bản`;
+
+        document.getElementById("totalCount").textContent = items.length;
+        document.getElementById("successCount").textContent = successCount;
+        document.getElementById("errorCount").textContent = errorCount;
+      }
+
+      function normalizeCode(code) {
+        return code.replace(/\./g, "");
+      }
+
+      async function downloadNext() {
+        if (currentIndex >= items.length) {
+          addLog("🎉 Hoàn thành! Đã tải xong tất cả văn bản.", "success");
+          document.getElementById("startBtn").disabled = false;
+          document.getElementById("startBtn").innerHTML =
+            "<span>⬇️</span> Bắt đầu tải từ JSON";
+          return;
+        }
+
+        const item = items[currentIndex];
+        const code = item.code;
+        const id = item.id;
+        const name = item.name || "";
+
+        try {
+          const normalizedCode = normalizeCode(code);
+          const downloadUrl = `https://thutuc.dichvucong.gov.vn/jsp/tthc/export/export_word_detail_tthc.jsp?maTTHC=${normalizedCode}&idTTHC=${id}`;
+
+          addLog(`Đang tải: <strong>${code}</strong> - ${name}`, "info");
+
+          // Tạo thẻ <a> ẩn để tải file trực tiếp
+          const a = document.createElement("a");
+          a.href = downloadUrl;
+          a.download = `TTHC_${normalizedCode}.doc`;
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
+
+          // Xóa thẻ <a> sau khi click
+          setTimeout(() => {
+            document.body.removeChild(a);
+          }, 100);
+
+          successCount++;
+          const linkHtml = `<a href="${downloadUrl}" class="download-link" target="_blank">Tải lại</a>`;
+          addLog(
+            `✓ <strong>${code}</strong> - ${name} | ${linkHtml}`,
+            "success"
+          );
+        } catch (error) {
+          errorCount++;
+          addLog(
+            `✗ Lỗi khi tải văn bản <strong>${code}</strong>: ${error.message}`,
+            "error"
+          );
+        }
+
+        currentIndex++;
+        updateProgress();
+
+        // Đợi 2 giây trước khi tải văn bản tiếp theo
+        setTimeout(downloadNext, 2000);
+      }
+
+      function startDownload() {
+        const input = document.getElementById("jsonInput").value.trim();
+
+        if (!input) {
+          alert("Vui lòng paste JSON data!");
+          return;
+        }
+
+        try {
+          const jsonData = JSON.parse(input);
+
+          if (!Array.isArray(jsonData) || jsonData.length === 0) {
+            alert("JSON phải là một array và không được rỗng!");
+            return;
+          }
+
+          // Parse JSON và lấy thông tin
+          items = jsonData.map((item) => ({
+            code: item.PROCEDURE_CODE,
+            id: item.ID,
+            name: item.PROCEDURE_NAME || "",
+          }));
+
+          // Reset
+          currentIndex = 0;
+          successCount = 0;
+          errorCount = 0;
+          document.getElementById("logSection").innerHTML = "";
+
+          // Hiển thị progress
+          document.getElementById("progressSection").style.display = "block";
+          document.getElementById("startBtn").disabled = true;
+          document.getElementById("startBtn").innerHTML =
+            "<span>⏳</span> Đang tải...";
+
+          addLog(`🚀 Bắt đầu tải ${items.length} văn bản...`, "info");
+          addLog(
+            `⚠️ Lưu ý: Trình duyệt có thể hỏi cho phép tải nhiều file. Hãy chọn "Cho phép" để tải tự động.`,
+            "info"
+          );
+          updateProgress();
+
+          // Bắt đầu tải
+          downloadNext();
+        } catch (error) {
+          alert(
+            "JSON không hợp lệ! Vui lòng kiểm tra lại.\n\nLỗi: " + error.message
+          );
+        }
+      }
+
+      function clearAll() {
+        document.getElementById("jsonInput").value = "";
+        document.getElementById("logSection").innerHTML = "";
+        document.getElementById("progressSection").style.display = "none";
+        currentIndex = 0;
+        successCount = 0;
+        errorCount = 0;
+        items = [];
+      }
+    </script>
+  </body>
+</html>
